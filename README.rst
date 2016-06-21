@@ -4,8 +4,8 @@ Typecase
 A library providing `Algebraic Data Types
 <https://en.wikipedia.com/wiki/Algebraic_data_type>`_ for Python.
 
-.. image:: https://travis-ci.org/HolgerPeters/typecase.svg?branch=master
-    :target: https://travis-ci.org/HolgerPeters/typecase
+.. image:: https://travis-ci.org/blue-yonder/typecase.svg?branch=master
+    :target: https://travis-ci.org/blue-yonder/typecase
 
 
 This library is in a very early development stage (pre-alpha) and **thus not
