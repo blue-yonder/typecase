@@ -45,6 +45,10 @@ class {typename}(tuple, parent):
     @staticmethod
     def _check_types(args):
         argtypes = {argtypes}
+        if len(args) != len(argtypes):
+            raise TypeError("Number of args {{n_args}} does not match the number "
+                            "of supplied type {{n_type_args}}".format(n_args=len(args),
+                                                                    n_type_args=len(argtypes)))
         for item, typ in zip(args, argtypes):
             if isinstance(typ, str):
                 pass
