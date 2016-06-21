@@ -54,8 +54,8 @@ Tree.Branch(Tree.Leaf(10,), Tree.Leaf(20,))
 State of the Current Implementation
 ===================================
 
-As Choice is work in progress, there it implements some features already while
-not implementing other features yet.
+As :mod:`typecase` is work in progress, its implementation is not yet
+feature-complete.
 
 * data is stored in immutable tuples
 * simple type-checks using ``isinstance`` are available
