@@ -7,8 +7,8 @@ A library providing `Algebraic Data Types
 .. image:: https://travis-ci.org/blue-yonder/typecase.svg?branch=master
    :target: https://travis-ci.org/blue-yonder/typecase
 
-.. image:: https://coveralls.io/repos/github/HolgerPeters/typecase/badge.svg?branch=master
-   :target: https://coveralls.io/github/HolgerPeters/typecase?branch=master
+.. image:: https://coveralls.io/repos/github/blue-yonder/typecase/badge.svg?branch=master
+   :target: https://coveralls.io/github/blue-yonder/typecase?branch=master
 
 
 This library is in a very early development stage (pre-alpha) and **thus not
