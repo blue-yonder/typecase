@@ -16,3 +16,7 @@ exclude_lines =
     # Don't complain if tests don't hit defensive assertion code:
     raise AssertionError
     raise NotImplementedError
+
+    # We cannot really test for the syntaxerror without monkey patching the template
+    raise SyntaxError
+    except SyntaxError
