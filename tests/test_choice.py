@@ -86,3 +86,11 @@ def test_parametric_datatypes_violated():
     Leaf = Tree.Leaf
     with pytest.raises(TypeError):
         Branch("54", Leaf(1))
+
+
+def test_invalid_type_constraint_supplied_to_tuple():
+    with pytest.raises(TypeError):
+        @variant
+        class Tree(object):
+            Branch = Tuple(3, This)
+            Leaf = Tuple(object)

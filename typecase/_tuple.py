@@ -13,10 +13,12 @@ class Tuple(ProductType):
         def _type_representation_for_typechecker(typval):
             if isinstance(typval, type):
                 return typval.__name__
-            elif isinstance(typval, six.string_types):
-                return repr(typval)
             elif isinstance(typval, _This):
                 return "parent"
+            elif isinstance(typval, six.string_types):
+                return repr(typval)
+            else:
+                raise TypeError("Unexpected type supplied: {}".format(typval))
 
         type_lst = list(map(_type_representation_for_typechecker, self.args))
         return "[" + ",".join(type_lst) + "]"
@@ -67,8 +69,5 @@ class {typename}(tuple, parent):
 class Empty(Tuple):
     def __init__(self):
         super(Empty, self).__init__()
-
-    def __argtypes(self, parent):
-        return "[]"
 
 __all__ = []
