@@ -99,7 +99,9 @@ def test_supply_wrong_type_to_record_raises_an_error():
     with pytest.raises(TypeError) as excinfo:
         Expr.Plus(rhs=4, lhs=2)
 
-    assert "TypeError: In Plus, expected instance of `Expr` but got 4 of type `int`" in str(excinfo)
+    error_message = str(excinfo)
+    assert "TypeError: In Plus, expected instance of `Expr` but got" in error_message
+    assert "of type `int`" in error_message
 
 
 def test_that_record_type_cannot_be_created_when_passing_other_values_than_types():
