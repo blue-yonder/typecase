@@ -34,6 +34,8 @@ class Record(ProductType):
 
 
 def on_same_keys(d1, d2):
+    if set(d1.keys()) != set(d2.keys()):
+        raise KeyError("on_same_keys expects that both dictionaries share the same key")
     for key in d1.keys():
         yield (d1[key], d2[key])
 

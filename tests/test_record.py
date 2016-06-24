@@ -1,7 +1,10 @@
 from __future__ import print_function, division, absolute_import
 
 from typecase import variant, Record, Empty, Tuple, This
+
+from typecase._record import on_same_keys
 import pytest
+import unittest
 
 
 def test_use_record_in_variant():
@@ -89,3 +92,27 @@ def test_records_can_refer_to_variants_using_this():
 
     assert op.rhs[0] == 1
     assert op.lhs[0] == 2
+
+
+class TestOnSameKeys(unittest.TestCase):
+
+    def test_on_same_keys_combines_two_dictionaries(self):
+        first = dict(a=1, b=2, c=3)
+        second = dict(a=-1, b=-2, c=-3)
+
+        result = set(on_same_keys(first, second))
+
+        assert result == {(1, -1), (2, -2), (3, -3)}
+
+    def test_on_same_keys_throws_an_error_if_right_hand_side_key_is_missing(self):
+        first = dict(a=1, b=2, c=3)
+        second = dict(a=-1, b=-2)
+
+        with pytest.raises(Exception):
+            list(on_same_keys(first, second))
+
+    def test_on_same_keys_throws_an_error_if_left_hand_side_key_is_missing(self):
+        first = dict(a=1, b=2, c=3)
+        second = dict(a=-1, b=-2)
+        with pytest.raises(Exception):
+            list(on_same_keys(second, first))
