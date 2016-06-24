@@ -134,3 +134,34 @@ class TestOnSameKeys(unittest.TestCase):
         second = dict(a=-1, b=-2)
         with pytest.raises(Exception):
             list(on_same_keys(second, first))
+
+
+class TestTypeNaming(unittest.TestCase):
+    def test_may_not_start_with_lowercase(self):
+        with pytest.raises(NameError):
+            @variant
+            class Maybe(object):
+                just = Record(el=object)
+
+    def test_may_not_contain_underscore(self):
+        with pytest.raises(NameError):
+            @variant
+            class Maybe(object):
+                jus_t = Record(el=object)
+
+    def test_camel_case_is_fine(self):
+        with pytest.raises(NameError):
+            @variant
+            class Maybe(object):
+                just = Record(el=object)
+
+    def test_attributes_lowercase(self):
+        with pytest.raises(NameError):
+            @variant
+            class Maybe(object):
+                Just = Record(Element=object)
+
+    def test_attributes_underscore_are_valid(self):
+        @variant
+        class Maybe(object):
+            Just = Record(ele_ment=object)
