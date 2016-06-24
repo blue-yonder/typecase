@@ -94,6 +94,14 @@ def test_records_can_refer_to_variants_using_this():
     assert op.lhs[0] == 2
 
 
+def test_supply_wrong_type_to_record_raises_an_error():
+
+    with pytest.raises(TypeError) as excinfo:
+        Expr.Plus(rhs=4, lhs=2)
+
+    assert "TypeError: In Plus, expected instance of `Expr` but got 4 of type `int`" in str(excinfo)
+
+
 class TestOnSameKeys(unittest.TestCase):
 
     def test_on_same_keys_combines_two_dictionaries(self):
