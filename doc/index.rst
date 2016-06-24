@@ -73,18 +73,39 @@ API
 Tuple
 -----
 
-The tuple is the only product-type available with this library at the moment. It
-can be used in a variant declaration.
+The tuple is a type that consist of several elements. The elements of the tuple
+are unnamed (but accessible using their position).
 
 .. class:: typecase.Tuple
 
    Represents a typed tuple.
 
+   .. py:method:: __init__(self, *args)
+
+      Creates an object representing a typed tuple. This type-template
+      can be compiled into a instantiable type, for example by the
+      :func:`~typecase.variant` decorator.
+
+Record
+------
+
+A record is a product-type with named elements, i.e. the elements are referred
+to by name and not by position.
+
+.. class:: typecase.Record
+
+   .. py:method:: __init__(self, **type_mapping)
+
+      Creates an object representing a typed record. This type-template
+      can be compiled into a instantiable type, for example by the
+      :func:`~typecase.variant` decorator.
+
 
 Variant
 -------
 
-Variants are typecase's sum types.
+Variants enable you to have a type that can be one of several tuples and
+records.
 
 >>> from typecase import variant, Tuple, This
 >>> @variant
