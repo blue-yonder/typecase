@@ -11,7 +11,7 @@ class Record(ProductType):
             if isinstance(typval, type):
                 return "{}: {}".format(repr(k), typval.__name__)
             elif isinstance(typval, _This):
-                return "{}: parent".format(k)
+                return "'{}': parent".format(k)
             else:
                 raise TypeError("Unexpected type supplied: {}".format(typval))
 
@@ -24,6 +24,7 @@ class Record(ProductType):
                                                    typename=typename,
                                                    argtypes=self.__argtypes(parent))
         namespace = dict(parent=parent,
+                         on_same_keys=on_same_keys,
                          __name__='meta_{}'.format(typename))
         try:
             exec(class_definition, namespace)
@@ -31,11 +32,37 @@ class Record(ProductType):
             raise SyntaxError(e.message + ':\n' + class_definition)
         return namespace[typename]
 
+
+def on_same_keys(d1, d2):
+    for key in d1.keys():
+        yield (d1[key], d2[key])
+
+
 _record_template = """
 class {typename}(parent):
     def __init__(self, **kwargs):
-        self._check_types(kwargs)
         self.kwargs = kwargs
+        self._check_types(kwargs)
+
+    @staticmethod
+    def _check_types(kwargs):
+        argtypes = {argtypes}
+        format_args = dict()
+        format_args["typenames_def"] = argtypes.keys()
+        format_args["typenames_constr"] = kwargs.keys()
+        if set(kwargs.keys()) != set(argtypes.keys()):
+            raise TypeError("Attribute names {{typenames_constr}}"
+                            "differ from those given in the definition "
+                            " {{typenames_def}}".format(**format_args))
+        for item, typ in on_same_keys(kwargs, argtypes):
+            if isinstance(typ, str):
+                pass
+            elif not isinstance(item, typ):
+                raise TypeError("In {typename}, expected instance of `{{typ}}`"
+                                " but got {{item}} of type `{{itemtype}}`"\
+                                .format(typ=typ.__name__,
+                                        item=repr(item),
+                                        itemtype=type(item).__name__))
 
     def __getitem__(self, rhs):
         return self.kwargs[rhs]
@@ -54,22 +81,6 @@ class {typename}(parent):
         else:
             raise AttributeError(item)
 
-    @staticmethod
-    def _check_types(kwargs):
-        argtypes = {argtypes}
-        if len(kwargs) != len(argtypes):
-            raise TypeError("Number of kwargs {{n_args}} does not match the number "
-                            "of supplied type {{n_type_args}}".format(n_args=len(kwargs),
-                                                                    n_type_args=len(argtypes)))
-        for item, typ in zip(kwargs, argtypes):
-            if isinstance(typ, str):
-                pass
-            elif not isinstance(item, typ):
-                raise TypeError("In {typename}, expected instance of `{{typ}}`"
-                                " but got {{item}} of type `{{itemtype}}`"\
-                                .format(typ=typ.__name__,
-                                        item=repr(item),
-                                        itemtype=type(item).__name__))
 
     def __repr__(self):
         args = ", ".join(["{{}}={{}}".format(k, repr(v))
