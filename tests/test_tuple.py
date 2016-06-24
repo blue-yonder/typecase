@@ -17,7 +17,7 @@ class TestTypeNaming(unittest.TestCase):
         with pytest.raises(NameError):
             @variant
             class Maybe(object):
-                jus_t = Tuple(object)
+                Jus_t = Tuple(object)
 
     def test_camel_case_is_fine(self):
         with pytest.raises(NameError):
