@@ -19,12 +19,21 @@ def test_use_record_in_variant():
     assert isinstance(just_4, Maybe)
 
 
+def test_use_record_in_variant_dict_style_access():
+    just_4 = Maybe.Just(element=4)
+
+    assert just_4["element"] == 4
+
+    assert repr(just_4) == "Maybe.Just(element=4)"
+    assert isinstance(just_4, Maybe)
+
+
 def test_record_does_not_support_assignment():
     just_4 = Maybe.Just(element=4)
 
     with pytest.raises(TypeError) as excinfo:
         just_4["element"] = 10
-    assert "TypeError: 'Record' object does not support item assignment" in str(excinfo)
+    assert "TypeError: 'Just' object does not support item assignment" in str(excinfo)
 
 
 def test_record_does_not_support_assignments_by_attribute():
