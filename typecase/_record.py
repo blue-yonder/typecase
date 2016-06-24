@@ -6,13 +6,23 @@ def is_valid_value_name(name):
     return name.islower()
 
 
+def check_record_names(type_mappings):
+    for name in type_mappings:
+        if not is_valid_value_name(name):
+            raise NameError("Record element name {name} should be lower case.".format(name=name))
+
+
+def on_same_keys(d1, d2):
+    if set(d1.keys()) != set(d2.keys()):
+        raise KeyError("on_same_keys expects that both dictionaries share the same key")
+    for key in d1.keys():
+        yield (d1[key], d2[key])
+
+
 class Record(ProductType):
     def __init__(self, **type_mappings):
         self.__type_mappings = type_mappings
-
-        for name in type_mappings:
-            if not is_valid_value_name(name):
-                raise NameError("Record element name {name} should be lower case.".format(name=name))
+        check_record_names(type_mappings)
 
     def __argtypes(self, parent):
         def _type_representation_for_typechecker(k, typval):
@@ -39,13 +49,6 @@ class Record(ProductType):
         except SyntaxError as e:
             raise SyntaxError(e.message + ':\n' + class_definition)
         return namespace[typename]
-
-
-def on_same_keys(d1, d2):
-    if set(d1.keys()) != set(d2.keys()):
-        raise KeyError("on_same_keys expects that both dictionaries share the same key")
-    for key in d1.keys():
-        yield (d1[key], d2[key])
 
 
 _record_template = """
