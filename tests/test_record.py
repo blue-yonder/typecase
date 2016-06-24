@@ -102,6 +102,14 @@ def test_supply_wrong_type_to_record_raises_an_error():
     assert "TypeError: In Plus, expected instance of `Expr` but got 4 of type `int`" in str(excinfo)
 
 
+def test_that_record_type_cannot_be_created_when_passing_other_values_than_types():
+    with pytest.raises(TypeError):
+        @variant
+        class Maybe(object):
+            Nothing = Empty()
+            Just = Record(element=4)
+
+
 class TestOnSameKeys(unittest.TestCase):
 
     def test_on_same_keys_combines_two_dictionaries(self):
