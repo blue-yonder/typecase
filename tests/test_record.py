@@ -7,58 +7,55 @@ import pytest
 import unittest
 
 
-def test_use_record_in_variant():
+def make_maybe_class():
+    # the class must be created in a function, so that test-collection is not
+    # crashing if our decorator/types crash.
     @variant
     class Maybe(object):
         Nothing = Empty()
         Just = Record(element=object)
-
-    just_4 = Maybe.Just(element=4)
-
-    assert just_4.element == 4
-
-    assert repr(just_4) == "Maybe.Just(element=4)"
-    assert isinstance(just_4, Maybe)
+    return Maybe
 
 
-def test_use_record_in_variant_dict_style_access():
-    @variant
-    class Maybe(object):
-        Nothing = Empty()
-        Just = Record(element=object)
+class TestRecordInMaybeVariant(unittest.TestCase):
 
-    just_4 = Maybe.Just(element=4)
+    def test_values_by_attribute_access(self):
+        Maybe = make_maybe_class()
 
-    assert just_4["element"] == 4
+        just_4 = Maybe.Just(element=4)
 
-    assert repr(just_4) == "Maybe.Just(element=4)"
-    assert isinstance(just_4, Maybe)
+        assert just_4.element == 4
 
+        assert repr(just_4) == "Maybe.Just(element=4)"
+        assert isinstance(just_4, Maybe)
 
-def test_record_does_not_support_assignment():
-    @variant
-    class Maybe(object):
-        Nothing = Empty()
-        Just = Record(element=object)
+    def test_values_by_dictionary_style_access(self):
+        Maybe = make_maybe_class()
 
-    just_4 = Maybe.Just(element=4)
+        just_4 = Maybe.Just(element=4)
 
-    with pytest.raises(TypeError) as excinfo:
-        just_4["element"] = 10
-    assert "TypeError: 'Just' object does not support item assignment" in str(excinfo)
+        assert just_4["element"] == 4
 
+        assert repr(just_4) == "Maybe.Just(element=4)"
+        assert isinstance(just_4, Maybe)
 
-def test_record_does_not_support_assignments_by_attribute():
-    @variant
-    class Maybe(object):
-        Nothing = Empty()
-        Just = Record(element=object)
+    def test_immutability_of_dictionary_access(self):
+        Maybe = make_maybe_class()
 
-    just_4 = Maybe.Just(element=4)
+        just_4 = Maybe.Just(element=4)
 
-    with pytest.raises(TypeError) as excinfo:
-        just_4.element = 10
-    assert "TypeError: 'Record' object does not support item assignment" in str(excinfo)
+        with pytest.raises(TypeError) as excinfo:
+            just_4["element"] = 10
+        assert "TypeError: 'Just' object does not support item assignment" in str(excinfo)
+
+    def test_immutability_of_attribute_access(self):
+        Maybe = make_maybe_class()
+
+        just_4 = Maybe.Just(element=4)
+
+        with pytest.raises(TypeError) as excinfo:
+            just_4.element = 10
+        assert "TypeError: 'Record' object does not support item assignment" in str(excinfo)
 
 
 def test_multiple_keys_work_in_record():
@@ -80,28 +77,33 @@ def test_multiple_keys_work_in_record():
     assert c2 == c2
 
 
-@variant
-class Expr(object):
-    Plus = Record(rhs=This, lhs=This)
-    Literal = Tuple(int)
+def make_expr_variant():
+    @variant
+    class Expr(object):
+        Plus = Record(rhs=This, lhs=This)
+        Literal = Tuple(int)
+    return Expr
 
 
-def test_records_can_refer_to_variants_using_this():
-    op = Expr.Plus(rhs=Expr.Literal(1),
-                   lhs=Expr.Literal(2))
+class TestRecordInExprVariant(unittest.TestCase):
 
-    assert op.rhs[0] == 1
-    assert op.lhs[0] == 2
+    def test_records_can_refer_to_variants_using_this(self):
+        Expr = make_expr_variant()
+        op = Expr.Plus(rhs=Expr.Literal(1),
+                       lhs=Expr.Literal(2))
 
+        assert op.rhs[0] == 1
+        assert op.lhs[0] == 2
 
-def test_supply_wrong_type_to_record_raises_an_error():
+    def test_supply_wrong_type_to_record_raises_an_error(self):
+        Expr = make_expr_variant()
 
-    with pytest.raises(TypeError) as excinfo:
-        Expr.Plus(rhs=4, lhs=2)
+        with pytest.raises(TypeError) as excinfo:
+            Expr.Plus(rhs=4, lhs=2)
 
-    error_message = str(excinfo)
-    assert "TypeError: In Plus, expected instance of `Expr` but got" in error_message
-    assert "of type `int`" in error_message
+        error_message = str(excinfo)
+        assert "TypeError: In Plus, expected instance of `Expr` but got" in error_message
+        assert "of type `int`" in error_message
 
 
 def test_that_record_type_cannot_be_created_when_passing_other_values_than_types():
