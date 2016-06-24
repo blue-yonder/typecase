@@ -2,9 +2,17 @@ from __future__ import print_function, division, absolute_import
 from ._types import ProductType, _This
 
 
+def is_valid_value_name(name):
+    return name.islower()
+
+
 class Record(ProductType):
     def __init__(self, **type_mappings):
         self.__type_mappings = type_mappings
+
+        for name in type_mappings:
+            if not is_valid_value_name(name):
+                raise NameError("Record element name {name} should be lower case.".format(name=name))
 
     def __argtypes(self, parent):
         def _type_representation_for_typechecker(k, typval):
