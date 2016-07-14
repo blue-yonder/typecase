@@ -2,7 +2,7 @@ Typecase
 ========
 
 A library providing `Algebraic Data Types
-<https://en.wikipedia.com/wiki/Algebraic_data_type>`_ for Python.
+<https://en.wikipedia.org/wiki/Algebraic_data_type>`_ for Python.
 
 .. image:: https://travis-ci.org/blue-yonder/typecase.svg?branch=master
    :target: https://travis-ci.org/blue-yonder/typecase
