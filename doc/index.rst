@@ -22,7 +22,7 @@ For example, consider a recursively defined binary tree.
 ...             raise ValueError("You must either pass `left` and `right`, or `leaf`, not all three")
 ...         self.left = None
 ...         self.right = None
-...         self.leaf_value = val
+...         self.leaf_value = leaf_val
 
 Such code (and there is much more complicated code of this kind in the wild) is
 not very easy to read and understand. An alternative would be to refactor
